@@ -101,6 +101,89 @@ def get_favorite_id(favorite_id):
         return jsonify({"msg":"No existe el favorito"}),404
     return jsonify(favorito.serialize()),200
 
+@app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
+def post_favorite_planet(planet_id):
+    body = request.json
+    email = body.get("email")
+    user = User.query.filter_by(email=email).one_or_none()
+    if user == None:
+        return jsonify({"msg":"No existe el usuario"}),404
+   
+    planeta = Planet.query.get(planet_id)
+    if planeta == None:
+        return jsonify({"msg":"No existe el planeta"}),404
+    
+    new_favorite = Favorite()
+    new_favorite.user = user
+    new_favorite.planet = planeta
+    db.session.add(new_favorite)
+    db.session.commit()
+   
+
+    return jsonify(new_favorite.serialize()), 200
+
+@app.route('/favorite/people/<int:people_id>', methods=['POST'])
+def post_favorite_people(people_id):
+    body = request.json
+    email = body.get("email")
+    user = User.query.filter_by(email=email).one_or_none()
+    if user == None:
+        return jsonify({"msg":"No existe el usuario"}),404
+   
+    people = People.query.get(people_id)
+    if people == None:
+        return jsonify({"msg":"No existe el personaje"}),404
+    
+    new_favorite = Favorite()
+    new_favorite.user = user
+    new_favorite.people = people
+    db.session.add(new_favorite)
+    db.session.commit()
+   
+
+    return jsonify(new_favorite.serialize()), 200
+
+@app.route('/favorite/planet/<int:planet_id>', methods=['DELETE'])
+def delete_favorite_planet(planet_id):
+    body = request.json
+    email = body.get("email")
+    user = User.query.filter_by(email=email).one_or_none()
+    if user == None:
+        return jsonify({"msg":"No existe el usuario"}),404
+   
+    planeta = Planet.query.get(planet_id)
+    if planeta == None:
+        return jsonify({"msg":"No existe el planeta"}),404
+    
+    favorite_delete = Favorite.query.filter_by(user_id=user.id,planet_id=planeta.id).first()
+    if favorite_delete == None:
+        return jsonify({"msg":"No existe el favorito"}),404
+    db.session.delete(favorite_delete)
+    db.session.commit()
+   
+
+    return jsonify({"msg":"Eliminado con exito"}), 200
+
+@app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
+def delete_favorite_people(people_id):
+    body = request.json
+    email = body.get("email")
+    user = User.query.filter_by(email=email).one_or_none()
+    if user == None:
+        return jsonify({"msg":"No existe el usuario"}),404
+   
+    people = People.query.get(people_id)
+    if people == None:
+        return jsonify({"msg":"No existe el personaje"}),404
+    
+    favorite_delete = Favorite.query.filter_by(user_id=user.id,people_id=people.id).first()
+    if favorite_delete == None:
+        return jsonify({"msg":"No existe el favorito"}),404
+    db.session.delete(favorite_delete)
+    db.session.commit()
+   
+
+    return jsonify({"msg":"Eliminado con exito"}), 200
 
    
    
