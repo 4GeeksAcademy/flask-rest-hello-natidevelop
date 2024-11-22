@@ -17,6 +17,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
+            "is_active":self.is_active
             # do not serialize the password, its a security breach
         }
     
@@ -75,7 +76,7 @@ class Favorite(db.Model):
 
 
     def __repr__(self):
-        return '<Favorite %r>' % self.name
+        return '<Favorite %r>' % self.id
 
     def serialize(self):
         return {
